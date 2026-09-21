@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
+<title>CS COIN</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<style>
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+
+  background:
+    radial-gradient(
+      circle at top,
+      #252525,
+      #080808 70%
+    );
+
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  max-width: 500px;
+  margin: auto;
+  padding: 20px 15px 30px;
+  text-align: center;
+}
+
+.logo {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.subtitle {
+  margin-top: 5px;
+  color: #888;
+  font-size: 13px;
+}
+
+.user {
+  margin-top: 20px;
+  color: #bbb;
+}
+
+.balance {
+  margin-top: 25px;
+  font-size: 40px;
+  font-weight: bold;
+}
+
+.coin {
+  width: 230px;
+  height: 230px;
+
+  margin: 30px auto;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 95px;
+
+  background:
+    radial-gradient(
+      circle at 30% 25%,
+      #ffe680,
+      #d99b00 55%,
+      #765000
+    );
+
+  border: 7px solid #b77d00;
+
+  box-shadow:
+    0 0 20px #e5a900,
+    0 0 55px rgba(255,180,0,.35);
+
+  user-select: none;
+  cursor: pointer;
+
+  transition: .08s;
+}
+
+.coin:active {
+  transform: scale(.90);
+}
+
+.plus {
+  position: fixed;
+
+  color: #ffd43b;
+
+  font-size: 24px;
+  font-weight: bold;
+
+  pointer-events: none;
+
+  animation: fly .7s forwards;
+}
+
+@keyframes fly {
+
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-80px);
+  }
+
+}
+
+.menu {
+
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 12px;
+
+}
+
+.button {
+
+  padding: 18px 10px;
+
+  background: #161616;
+
+  border:
+    1px solid #292929;
+
+  border-radius: 17px;
+
+  color: white;
+
+  font-size: 15px;
+
+}
+
+.icon {
+
+  display: block;
+
+  font-size: 28px;
+
+  margin-bottom: 8px;
+
+}
+
+.language {
+
+  width: 100%;
+
+  margin-top: 18px;
+
+  padding: 15px;
+
+  border-radius: 15px;
+
+  background: #161616;
+
+  color: white;
+
+  border: 1px solid #292929;
+
+  font-size: 15px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="logo">
+    🎮 CS COIN
+  </div>
+
+  <div class="subtitle">
+    COIN • AUCTION • REWARDS
+  </div>
+
+  <div
+    class="user"
+    id="user"
+  >
+    👤 Player
+  </div>
+
+  <div
+    class="balance"
+  >
+    🪙 <span id="coins">0</span>
+  </div>
+
+  <div
+    class="coin"
+    onclick="tapCoin(event)"
+  >
+    🪙
+  </div>
+
+  <div class="menu">
+
+    <div class="button">
+      <span class="icon">🔨</span>
+      Auksion
+    </div>
+
+    <div class="button">
+      <span class="icon">🎁</span>
+      Bonus
+    </div>
+
+    <div class="button">
+      <span class="icon">👥</span>
+      Referal
+    </div>
+
+    <div class="button">
+      <span class="icon">🏆</span>
+      Reyting
+    </div>
+
+  </div>
+
+  <select
+    class="language"
+    id="language"
+  >
+
+    <option value="uz">
+      🇺🇿 O‘zbek
+    </option>
+
+    <option value="ru">
+      🇷🇺 Русский
+    </option>
+
+    <option value="ko">
+      🇰🇷 한국어
+    </option>
+
+    <option value="hi">
+      🇮🇳 हिन्दी
+    </option>
+
+  </select>
+
+</div>
+
+<script>
+
+const tg =
+  window.Telegram.WebApp;
+
+tg.ready();
+tg.expand();
+
+let coins = 0;
+
+const user =
+  tg.initDataUnsafe?.user;
+
+if (user) {
+
+  document.getElementById(
+    "user"
+  ).textContent =
+    "👤 " +
+    (
+      user.first_name ||
+      user.username ||
+      "Player"
+    );
+
+}
+
+function tapCoin(event) {
+
+  coins++;
+
+  document.getElementById(
+    "coins"
+  ).textContent =
+    coins.toLocaleString();
+
+  const plus =
+    document.createElement("div");
+
+  plus.className = "plus";
+
+  plus.textContent =
+    "+1 🪙";
+
+  plus.style.left =
+    event.clientX + "px";
+
+  plus.style.top =
+    event.clientY + "px";
+
+  document.body.appendChild(
+    plus
+  );
+
+  setTimeout(() => {
+
+    plus.remove();
+
+  }, 700);
+
+}
+
+</script>
+
+</body>
+
+</html>
