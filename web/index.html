@@ -276,65 +276,88 @@ body {
 
 <script>
 
-const tg =
-  window.Telegram.WebApp;
+const tg = window.Telegram.WebApp;
 
 tg.ready();
 tg.expand();
 
 let coins = 0;
 
-const user =
-  tg.initDataUnsafe?.user;
+async function loadUser() {
 
-if (user) {
+  const response = await fetch("/api/user", {
+    method: "POST",
 
-  document.getElementById(
-    "user"
-  ).textContent =
-    "👤 " +
-    (
-      user.first_name ||
-      user.username ||
-      "Player"
-    );
+    headers: {
+      "Content-Type": "application/json"
+    },
 
-}
+    body: JSON.stringify({
+      initData: tg.initData
+    })
+  });
 
-function tapCoin(event) {
+  const data = await response.json();
 
-  coins++;
+  if (!data.success) {
+    console.error(data.message);
+    return;
+  }
 
-  document.getElementById(
-    "coins"
-  ).textContent =
+  coins = data.user.coins;
+
+  document.getElementById("coins").textContent =
     coins.toLocaleString();
 
-  const plus =
-    document.createElement("div");
+  document.getElementById("user").textContent =
+    "👤 " + (data.user.first_name || "Player");
+}
+
+async function tapCoin(event) {
+
+  const response = await fetch("/api/tap", {
+
+    method: "POST",
+
+    headers: {
+      "Content-Type": "application/json"
+    },
+
+    body: JSON.stringify({
+      initData: tg.initData,
+      amount: 1
+    })
+
+  });
+
+  const data = await response.json();
+
+  if (!data.success) {
+    console.error(data.message);
+    return;
+  }
+
+  coins = data.coins;
+
+  document.getElementById("coins").textContent =
+    coins.toLocaleString();
+
+  const plus = document.createElement("div");
 
   plus.className = "plus";
+  plus.textContent = "+1 🪙";
 
-  plus.textContent =
-    "+1 🪙";
+  plus.style.left = event.clientX + "px";
+  plus.style.top = event.clientY + "px";
 
-  plus.style.left =
-    event.clientX + "px";
-
-  plus.style.top =
-    event.clientY + "px";
-
-  document.body.appendChild(
-    plus
-  );
+  document.body.appendChild(plus);
 
   setTimeout(() => {
-
     plus.remove();
-
   }, 700);
-
 }
+
+loadUser();
 
 </script>
 
